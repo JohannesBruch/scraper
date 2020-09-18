@@ -94,7 +94,7 @@ def extract_header():
     header: header object
         for requests module
     """
-    with open("PI/user_agents.yaml", 'r') as stream:
+    with open("user_agents.yaml", 'r') as stream:
         user_agents = yaml.load(stream)
     user = user_agents[random.randrange(len(user_agents))]
     user_agent = user.decode("utf-8")
@@ -282,10 +282,10 @@ def add_annotated_images(image_URLs, model_name, phone_images,
             image_URL = image_URL.decode('utf-8')
             response = extract_response(image_URL)
             image = extract_image(response)
-            last_address = re.findall(r'PI/' + '(\d+)' + '.jpg', phone_images[len(phone_images)-1])
+            last_address = re.findall(r'' + '(\d+)' + '.jpg', phone_images[len(phone_images)-1])
             last_address_int_list = [int(s) for s in last_address[0].split() if s.isdigit()] 
             new_address = last_address_int_list[0] + 1
-            image_path = 'PI/' + str(new_address) + '.jpg'
+            image_path = '' + str(new_address) + '.jpg'
             image.save(image_path)
             print('Path of saved image:')
             print(image_path)
@@ -368,7 +368,7 @@ def append_datasets(URL, currency, pre_pattern, start, end, post_pattern,
     c_start_t: integer
         position for starting to look for c_exclude in title string
     c_end_t: integer
-        position for starting to look for c_exclude in title string
+        position for ending to look for c_exclude in title string
     is_too_much_t: boolean
         true if c_exclude should be searched for in title string
     phone_images: list of image objects in jpg
@@ -587,91 +587,103 @@ pre_t = bytes(input('What is just in front of the title of the advert: '))
 start_t = bytes(input('What is at the start of the title of the advert: '))
 end_t = bytes(input('What is at the end of the title of the advert: '))
 post_t = bytes(input('What is just behind the title of the advert: '))
-c_exclude_t = []
-c_start_t = []
-c_end_t = []
 is_too_much_t = False
+if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+    is_too_much_t = True
+c_exclude_t = bytes(input('Links with this pattern will be exluded: '))
+c_start_t = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
+c_end_t = int(input('And/or after this index: '))
 
 # definitions for price extraction
-pre_p = b'''<strong>'''
+pre_p = bytes(input('What is usually just in front of the price of the product: '))
 start_p = b''
 end_p = b''
-post_p = b'''&nbsp;&euro;</strong>'''
-c_exclude_p = []
-c_start_p = []
-c_end_p = []
+post_p = bytes(input('What is usually just behind the price of the product: '))
 is_too_much_p = False
+if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+    is_too_much_p = True
+c_exclude_p = bytes(input('Links with this pattern will be exluded: '))
+c_start_p = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
+c_end_p = int(input('And/or after this index: '))
 
 # alternative definitions for price extraction
-pre_p2 = b'<span class="price"><strong>'
+pre_p2 = bytes(input('What is alternatively just in front of the price of the product: '))
 start_p2 = b''
 end_p2 = b''
-post_p2 = b'''&nbsp;&euro;'''
-c_exclude_p2 = []
-c_start_p2 = []
-c_end_p2 = []
+post_p2 = bytes(input('What is alternatively just behind the price of the product: '))
 is_too_much_p2 = False
+if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+    is_too_much_p2 = True
+c_exclude_p2 = bytes(input('Links with this pattern will be exluded: '))
+c_start_p2 = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
+c_end_p2 = int(input('And/or after this index: '))
 
-# definitions for images extraction in individual adverts
-protocol = b''
-pre_pattern = b'''<a class="fancybox" href="'''
-start = b''
-end = b''
-post_pattern = b'''"'''
-c_exclude = []
-c_start = []
-c_end = []
+# definitions for image extraction in individual adverts
+protocol = bytes(input('Enter the protocol here, if it is not found at the beginning of the image URL: '))
+pre_pattern = bytes(input('What is just in front of the image URL: '))
+start = bytes(input('What is at the beginning of the image URL: '))
+end = bytes(input('What is at the end of the image URL: '))
+post_pattern = bytes(input('What is just behind the image URL: '))
 is_too_much = False
+if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+    is_too_much = True
+c_exclude = bytes(input('Links with this pattern will be exluded: '))
+c_start = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
+c_end = int(input('And/or after this index: '))
 
 # definitions for extracting URLs of phone advert list
-next_URL = 'https://www.buyzoxs.de/kaufen/handy-smartphone.html?all=1'  # inital URL
-currency = 'EUR'  # currency of prices on website
+next_URL = bytes(input('What is the URL that shows the beginning of the advert list: '))  # inital URL
+currency = bytes(input('What is the ISO 4217 code of the currency on this site: ')) # currency of prices on website as three letter code
 counter = 0
-URL_predial = 'https://www.buyzoxs.de/'
-URL_extension = ''
-pre_pattern_u = b'''<h2><a href="'''
-start_u = b''
-end_u = b''
-post_pattern_u = b'''">'''
-c_exclude_u = []
-c_start_u = []
-c_end_u = []
+URL_predial = bytes(input('What do we have to add to the beginning of the URL part that the site will provide for the individual adverts: '))
+URL_extension = bytes(input('What do we have to add to the end of the URL part that the site will provide for the individual adverts: '))
+pre_pattern_u = bytes(input('What is just in front of that URL part: '))
+start_u = bytes(input('What is at the beginning of that URL part: '))
+end_u = bytes(input('What is at the end of that URL part: '))
+post_pattern_u = bytes(input('What is just behind that URL part: '))'
 is_too_much_u = False
+if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+    is_too_much_u = True
+c_exclude_u = bytes(input('Links with this pattern will be exluded: '))
+c_start_u = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
+c_end_u = int(input('And/or after this index: '))
 
 # definitions for finding next page of advert list
-pre_pattern_n = b'''<li class="next-page"><a href="https://www.buyzoxs.de/'''
-start_n = b''
-end_n = b''
-post_pattern_n = b'">'
-c_exclude_n = []
-c_start_n = []
-c_end_n = []
+pre_pattern_n = bytes(input('What is just in front of the URL for the next page of the list: '))
+start_n = bytes(input('What is at the beginning of the URL for the next page of the list: '))
+end_n = bytes(input('What is at the end of the URL for the next page of the list: '))
+post_pattern_n = bytes(input('What is just behind the URL for the next page of the list: '))
 is_too_much_n = False
+if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+    is_too_much_n = True
+c_exclude_n = bytes(input('Links with this pattern will be exluded: '))
+c_start_n = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
+c_end_n = int(input('And/or after this index: '))
 
 
 # load yaml
 # three lists which are meant to keep same length
-with open("PI/phone_images.yaml", 'r') as stream:
+with open("phone_images.yaml", 'r') as stream:
     phone_images = yaml.load(stream)
-with open("PI/phone_image_annotations.yaml", 'r') as stream:
+with open("phone_image_annotations.yaml", 'r') as stream:
     phone_image_annotations = yaml.load(stream)
-with open("PI/phone_image_URLs.yaml", 'r') as stream:
+with open("phone_image_URLs.yaml", 'r') as stream:
     phone_image_URLs = yaml.load(stream)
 # another 6 lists which are meant to keep same length
-with open("PI/model_names.yaml", 'r') as stream:
+with open("model_names.yaml", 'r') as stream:
     model_names = yaml.load(stream)
-with open("PI/average_prices.yaml", 'r') as stream:
+with open("average_prices.yaml", 'r') as stream:
     average_prices = yaml.load(stream)
-with open("PI/latest_prices.yaml", 'r') as stream:
+with open("latest_prices.yaml", 'r') as stream:
     latest_prices = yaml.load(stream)
-with open("PI/addition_dates.yaml", 'r') as stream:
+with open("addition_dates.yaml", 'r') as stream:
     addition_dates = yaml.load(stream)
-with open("PI/latest_update_dates.yaml", 'r') as stream:
+with open("latest_update_dates.yaml", 'r') as stream:
     latest_update_dates = yaml.load(stream)
-with open("PI/occurence_numbers.yaml", 'r') as stream:
+with open("occurence_numbers.yaml", 'r') as stream:
     occurence_numbers = yaml.load(stream)
 # another list
-with open("PI/exception_URLs.yaml", 'r') as stream:
+with open("exception_URLs.yaml", 'r') as stream:
     exception_URLs = yaml.load(stream)
 
 dictionary = dict(phone_images=phone_images,
@@ -723,7 +735,7 @@ while True:
         next_URL = URL_predial + next_URL.decode("utf-8") + URL_extension
 # saving all lists by serialising to yaml
 for key, value in dictionary.items():
-    stream = open('PI/' + key + '.yaml', 'w')
+    stream = open('' + key + '.yaml', 'w')
     yaml.dump(value, stream)
 
 # print summary
