@@ -577,167 +577,167 @@ def append_datasets(URL, currency, pre_pattern, start, end, post_pattern,
         latest_update_dates, occurence_numbers, exception_URLs
 
 
-# body
-# Defintions of Booleans for execution summary:
-# If we need to add a modelname, a human needs to check it.
-# The initial assumption is that no new names of phones will be added.
-is_new_name = False
-# definitions for title extraction
-pre_t = bytes(input('What is just in front of the title of the advert: '))
-start_t = bytes(input('What is at the start of the title of the advert: '))
-end_t = bytes(input('What is at the end of the title of the advert: '))
-post_t = bytes(input('What is just behind the title of the advert: '))
-is_too_much_t = False
-if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
-    is_too_much_t = True
-c_exclude_t = bytes(input('Links with this pattern will be exluded: '))
-c_start_t = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
-c_end_t = int(input('And/or after this index: '))
-
-# definitions for price extraction
-pre_p = bytes(input('What is usually just in front of the price of the product: '))
-start_p = b''
-end_p = b''
-post_p = bytes(input('What is usually just behind the price of the product: '))
-is_too_much_p = False
-if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
-    is_too_much_p = True
-c_exclude_p = bytes(input('Links with this pattern will be exluded: '))
-c_start_p = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
-c_end_p = int(input('And/or after this index: '))
-
-# alternative definitions for price extraction
-pre_p2 = bytes(input('What is alternatively just in front of the price of the product: '))
-start_p2 = b''
-end_p2 = b''
-post_p2 = bytes(input('What is alternatively just behind the price of the product: '))
-is_too_much_p2 = False
-if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
-    is_too_much_p2 = True
-c_exclude_p2 = bytes(input('Links with this pattern will be exluded: '))
-c_start_p2 = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
-c_end_p2 = int(input('And/or after this index: '))
-
-# definitions for image extraction in individual adverts
-protocol = bytes(input('Enter the protocol here, if it is not found at the beginning of the image URL: '))
-pre_pattern = bytes(input('What is just in front of the image URL: '))
-start = bytes(input('What is at the beginning of the image URL: '))
-end = bytes(input('What is at the end of the image URL: '))
-post_pattern = bytes(input('What is just behind the image URL: '))
-is_too_much = False
-if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
-    is_too_much = True
-c_exclude = bytes(input('Links with this pattern will be exluded: '))
-c_start = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
-c_end = int(input('And/or after this index: '))
-
-# definitions for extracting URLs of phone advert list
-next_URL = bytes(input('What is the URL that shows the beginning of the advert list: '))  # inital URL
-currency = bytes(input('What is the ISO 4217 code of the currency on this site: ')) # currency of prices on website as three letter code
-counter = 0
-URL_predial = bytes(input('What do we have to add to the beginning of the URL part that the site will provide for the individual adverts: '))
-URL_extension = bytes(input('What do we have to add to the end of the URL part that the site will provide for the individual adverts: '))
-pre_pattern_u = bytes(input('What is just in front of that URL part: '))
-start_u = bytes(input('What is at the beginning of that URL part: '))
-end_u = bytes(input('What is at the end of that URL part: '))
-post_pattern_u = bytes(input('What is just behind that URL part: '))'
-is_too_much_u = False
-if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
-    is_too_much_u = True
-c_exclude_u = bytes(input('Links with this pattern will be exluded: '))
-c_start_u = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
-c_end_u = int(input('And/or after this index: '))
-
-# definitions for finding next page of advert list
-pre_pattern_n = bytes(input('What is just in front of the URL for the next page of the list: '))
-start_n = bytes(input('What is at the beginning of the URL for the next page of the list: '))
-end_n = bytes(input('What is at the end of the URL for the next page of the list: '))
-post_pattern_n = bytes(input('What is just behind the URL for the next page of the list: '))
-is_too_much_n = False
-if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
-    is_too_much_n = True
-c_exclude_n = bytes(input('Links with this pattern will be exluded: '))
-c_start_n = int(input('We will make an exception for this rule if the pattern only appear before this index: '))
-c_end_n = int(input('And/or after this index: '))
-
-
-# load yaml
-# three lists which are meant to keep same length
-with open("phone_images.yaml", 'r') as stream:
-    phone_images = yaml.load(stream)
-with open("phone_image_annotations.yaml", 'r') as stream:
-    phone_image_annotations = yaml.load(stream)
-with open("phone_image_URLs.yaml", 'r') as stream:
-    phone_image_URLs = yaml.load(stream)
-# another 6 lists which are meant to keep same length
-with open("model_names.yaml", 'r') as stream:
-    model_names = yaml.load(stream)
-with open("average_prices.yaml", 'r') as stream:
-    average_prices = yaml.load(stream)
-with open("latest_prices.yaml", 'r') as stream:
-    latest_prices = yaml.load(stream)
-with open("addition_dates.yaml", 'r') as stream:
-    addition_dates = yaml.load(stream)
-with open("latest_update_dates.yaml", 'r') as stream:
-    latest_update_dates = yaml.load(stream)
-with open("occurence_numbers.yaml", 'r') as stream:
-    occurence_numbers = yaml.load(stream)
-# another list
-with open("exception_URLs.yaml", 'r') as stream:
-    exception_URLs = yaml.load(stream)
-
-dictionary = dict(phone_images=phone_images,
-                  phone_image_annotations=phone_image_annotations,
-                  phone_image_URLs=phone_image_URLs,
-                  model_names=model_names,
-                  average_prices=average_prices,
-                  latest_prices=latest_prices,
-                  addition_dates=addition_dates,
-                  latest_update_dates=latest_update_dates,
-                  occurence_numbers=occurence_numbers,
-                  exception_URLs=exception_URLs
-                  )
-
-while True:
-    # extracting URLs of phone advert list on ebay.com
-    response = extract_response(next_URL)
-    # print(response.content)
-    URLs = extract_bytes(response, pre_pattern_u, start_u, end_u,
-                         post_pattern_u, c_exclude_u, c_start_u, c_end_u,
-                         is_too_much_u)
-    # find URL of next part of the advert list
-    next_p = extract_bytes(response, pre_pattern_n, start_n, end_n,
-                           post_pattern_n, c_exclude_n, c_start_n, c_end_n,
-                           is_too_much_n)
-    # open every advert links via initial_URL and append datasets with adverts
-    print(URLs)
-    for URL in URLs:
-        counter = counter + 1
-        URL_string = URL_predial + URL.decode("utf-8") + URL_extension
-        append_datasets(URL_string, currency, pre_pattern, start, end,
-                        post_pattern, c_exclude, c_start, c_end, is_too_much,
-                        pre_p, start_p, end_p, post_p, c_exclude_p, c_start_p,
-                        c_end_p, is_too_much_p, pre_t, start_t, end_t, post_t,
-                        c_exclude_t, c_start_t, c_end_t, is_too_much_t,
-                        phone_images, phone_image_annotations,
-                        phone_image_URLs, model_names, average_prices,
-                        latest_prices, addition_dates, latest_update_dates,
-                        occurence_numbers,
-                        exception_URLs,
-                        is_new_name,
-                        protocol)
-    # if there is no further page of the list stop
-    if next_p == []:
-        break
-    # otherwise add preffix or suffix to the URL and change to string
-    else:
-        next_URL = next_p[0]
-        next_URL = URL_predial + next_URL.decode("utf-8") + URL_extension
-# saving all lists by serialising to yaml
-for key, value in dictionary.items():
-    stream = open('' + key + '.yaml', 'w')
-    yaml.dump(value, stream)
-
-# print summary
-if is_new_name:
-    print('Use check_model_names, because new names were added.')
+def main():
+    # Defintions of Booleans for execution summary:
+    # If we need to add a modelname, a human needs to check it.
+    # The initial assumption is that no new names of phones will be added.
+    is_new_name = False
+    # definitions for title extraction
+    pre_t = bytes(input('What is just in front of the title of the advert: ').encode("utf-8"))
+    start_t = bytes(input('What is at the start of the title of the advert: ').encode("utf-8"))
+    end_t = bytes(input('What is at the end of the title of the advert: ').encode("utf-8"))
+    post_t = bytes(input('What is just behind the title of the advert: ').encode("utf-8"))
+    is_too_much_t = False
+    if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+        is_too_much_t = True
+    c_exclude_t = bytes(input('Links with this pattern will be exluded: ').encode("utf-8"))
+    c_start_t = int(input('We will make an exception for this rule if the pattern only appear before this index: ').encode("utf-8"))
+    c_end_t = int(input('And/or after this index: ').encode("utf-8"))
+    
+    # definitions for price extraction
+    pre_p = bytes(input('What is usually just in front of the price of the product: ').encode("utf-8"))
+    start_p = b''
+    end_p = b''
+    post_p = bytes(input('What is usually just behind the price of the product: ').encode("utf-8"))
+    is_too_much_p = False
+    if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+        is_too_much_p = True
+    c_exclude_p = bytes(input('Links with this pattern will be exluded: ').encode("utf-8"))
+    c_start_p = int(input('We will make an exception for this rule if the pattern only appear before this index: ').encode("utf-8"))
+    c_end_p = int(input('And/or after this index: ').encode("utf-8"))
+    
+    # alternative definitions for price extraction
+    pre_p2 = bytes(input('What is alternatively just in front of the price of the product: ').encode("utf-8"))
+    start_p2 = b''
+    end_p2 = b''
+    post_p2 = bytes(input('What is alternatively just behind the price of the product: ').encode("utf-8"))
+    is_too_much_p2 = False
+    if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+        is_too_much_p2 = True
+    c_exclude_p2 = bytes(input('Links with this pattern will be exluded: ').encode("utf-8"))
+    c_start_p2 = int(input('We will make an exception for this rule if the pattern only appear before this index: ').encode("utf-8"))
+    c_end_p2 = int(input('And/or after this index: ').encode("utf-8"))
+    
+    # definitions for image extraction in individual adverts
+    protocol = bytes(input('Enter the protocol here, if it is not found at the beginning of the image URL: ').encode("utf-8"))
+    pre_pattern = bytes(input('What is just in front of the image URL: ').encode("utf-8"))
+    start = bytes(input('What is at the beginning of the image URL: ').encode("utf-8"))
+    end = bytes(input('What is at the end of the image URL: ').encode("utf-8"))
+    post_pattern = bytes(input('What is just behind the image URL: ').encode("utf-8"))
+    is_too_much = False
+    if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+        is_too_much = True
+    c_exclude = bytes(input('Links with this pattern will be exluded: ').encode("utf-8"))
+    c_start = int(input('We will make an exception for this rule if the pattern only appear before this index: ').encode("utf-8"))
+    c_end = int(input('And/or after this index: ').encode("utf-8"))
+    
+    # definitions for extracting URLs of phone advert list
+    next_URL = bytes(input('What is the URL that shows the beginning of the advert list: ').encode("utf-8"))  # inital URL
+    currency = bytes(input('What is the ISO 4217 code of the currency on this site: ').encode("utf-8")) # currency of prices on website as three letter code
+    counter = 0
+    URL_predial = bytes(input('What do we have to add to the beginning of the URL part that the site will provide for the individual adverts: ').encode("utf-8"))
+    URL_extension = bytes(input('What do we have to add to the end of the URL part that the site will provide for the individual adverts: ').encode("utf-8"))
+    pre_pattern_u = bytes(input('What is just in front of that URL part: ').encode("utf-8"))
+    start_u = bytes(input('What is at the beginning of that URL part: ').encode("utf-8"))
+    end_u = bytes(input('What is at the end of that URL part: ').encode("utf-8"))
+    post_pattern_u = bytes(input('What is just behind that URL part: ').encode("utf-8"))
+    is_too_much_u = False
+    if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+        is_too_much_u = True
+    c_exclude_u = bytes(input('Links with this pattern will be exluded: ').encode("utf-8"))
+    c_start_u = int(input('We will make an exception for this rule if the pattern only appear before this index: ').encode("utf-8"))
+    c_end_u = int(input('And/or after this index: ').encode("utf-8"))
+    
+    # definitions for finding next page of advert list
+    pre_pattern_n = bytes(input('What is just in front of the URL for the next page of the list: ').encode("utf-8"))
+    start_n = bytes(input('What is at the beginning of the URL for the next page of the list: ').encode("utf-8"))
+    end_n = bytes(input('What is at the end of the URL for the next page of the list: ').encode("utf-8"))
+    post_pattern_n = bytes(input('What is just behind the URL for the next page of the list: ').encode("utf-8"))
+    is_too_much_n = False
+    if input('Enter "y", if some should be excluded although they fulfil this pattern.')=='y':
+        is_too_much_n = True
+    c_exclude_n = bytes(input('Links with this pattern will be exluded: ').encode("utf-8"))
+    c_start_n = int(input('We will make an exception for this rule if the pattern only appear before this index: ').encode("utf-8"))
+    c_end_n = int(input('And/or after this index: ').encode("utf-8"))
+    
+    
+    # load yaml
+    # three lists which are meant to keep same length
+    with open("phone_images.yaml", 'r') as stream:
+        phone_images = yaml.load(stream)
+    with open("phone_image_annotations.yaml", 'r') as stream:
+        phone_image_annotations = yaml.load(stream)
+    with open("phone_image_URLs.yaml", 'r') as stream:
+        phone_image_URLs = yaml.load(stream)
+    # another 6 lists which are meant to keep same length
+    with open("model_names.yaml", 'r') as stream:
+        model_names = yaml.load(stream)
+    with open("average_prices.yaml", 'r') as stream:
+        average_prices = yaml.load(stream)
+    with open("latest_prices.yaml", 'r') as stream:
+        latest_prices = yaml.load(stream)
+    with open("addition_dates.yaml", 'r') as stream:
+        addition_dates = yaml.load(stream)
+    with open("latest_update_dates.yaml", 'r') as stream:
+        latest_update_dates = yaml.load(stream)
+    with open("occurence_numbers.yaml", 'r') as stream:
+        occurence_numbers = yaml.load(stream)
+    # another list
+    with open("exception_URLs.yaml", 'r') as stream:
+        exception_URLs = yaml.load(stream)
+    
+    dictionary = dict(phone_images=phone_images,
+                      phone_image_annotations=phone_image_annotations,
+                      phone_image_URLs=phone_image_URLs,
+                      model_names=model_names,
+                      average_prices=average_prices,
+                      latest_prices=latest_prices,
+                      addition_dates=addition_dates,
+                      latest_update_dates=latest_update_dates,
+                      occurence_numbers=occurence_numbers,
+                      exception_URLs=exception_URLs
+                      )
+    
+    while True:
+        # extracting URLs of phone advert list on ebay.com
+        response = extract_response(next_URL)
+        # print(response.content)
+        URLs = extract_bytes(response, pre_pattern_u, start_u, end_u,
+                             post_pattern_u, c_exclude_u, c_start_u, c_end_u,
+                             is_too_much_u)
+        # find URL of next part of the advert list
+        next_p = extract_bytes(response, pre_pattern_n, start_n, end_n,
+                               post_pattern_n, c_exclude_n, c_start_n, c_end_n,
+                               is_too_much_n)
+        # open every advert links via initial_URL and append datasets with adverts
+        print(URLs)
+        for URL in URLs:
+            counter = counter + 1
+            URL_string = URL_predial + URL.decode("utf-8") + URL_extension
+            append_datasets(URL_string, currency, pre_pattern, start, end,
+                            post_pattern, c_exclude, c_start, c_end, is_too_much,
+                            pre_p, start_p, end_p, post_p, c_exclude_p, c_start_p,
+                            c_end_p, is_too_much_p, pre_t, start_t, end_t, post_t,
+                            c_exclude_t, c_start_t, c_end_t, is_too_much_t,
+                            phone_images, phone_image_annotations,
+                            phone_image_URLs, model_names, average_prices,
+                            latest_prices, addition_dates, latest_update_dates,
+                            occurence_numbers,
+                            exception_URLs,
+                            is_new_name,
+                            protocol)
+        # if there is no further page of the list stop
+        if next_p == []:
+            break
+        # otherwise add preffix or suffix to the URL and change to string
+        else:
+            next_URL = next_p[0]
+            next_URL = URL_predial + next_URL.decode("utf-8") + URL_extension
+    # saving all lists by serialising to yaml
+    for key, value in dictionary.items():
+        stream = open('' + key + '.yaml', 'w')
+        yaml.dump(value, stream)
+    
+    # print summary
+    if is_new_name:
+        print('Use check_model_names, because new names were added.')
